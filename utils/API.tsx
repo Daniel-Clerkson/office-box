@@ -1,0 +1,1 @@
+export const API_BASE_URL = "https://office-box-test.onrender.com/api/v1";

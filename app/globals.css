@@ -1,0 +1,341 @@
+@import "tailwindcss";
+
+/* Light Mode Variables */
+html {
+  --text-primary: #000000;
+  --text-secondary: #6b7280;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f3f4f6;
+  --bg-tertiary: #e5e7eb;
+  --border-dark: rgba(0, 0, 0, 0.1);
+  --color-primary: #063785;
+  --color-secondary: #007aff;
+}
+
+/* Override system dark mode preference - force light mode */
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: light;
+    background-color: #ffffff;
+    color: #000000;
+  }
+  
+  body {
+    background-color: #ffffff;
+    color: #000000;
+  }
+}
+
+/* Dark mode class exists but does nothing - prevents errors */
+html.dark {
+  /* Intentionally empty - no dark mode styles */
+}
+
+html.dark .bg-white,
+html.dark .bg-gray-50,
+html.dark .bg-gray-100,
+html.dark .text-gray-800,
+html.dark .text-gray-900,
+html.dark .text-gray-600,
+html.dark .text-gray-700,
+html.dark main,
+html.dark section,
+html.dark div,
+html.dark .section-title,
+html.dark .section-text {
+  /* Intentionally empty - no dark mode styles */
+}
+
+/* Responsive breakpoints */
+@media (min-width: 480px) {
+  /* Custom styles for xs screens */
+}
+
+/* Font families */
+body {
+  overflow-x: hidden;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.dm-font {
+  font-family: "DM Sans", sans-serif;
+}
+
+/* Custom colors */
+:root {
+  --color-primary: #063785;
+  --color-secondary: #007aff;
+}
+
+/* Example usage */
+.text-primary {
+  color: #063785;
+}
+
+.text-secondary {
+  color: #007aff;
+}
+
+.bg-primary{
+  background: var(--color-primary);
+  color: white;
+}
+
+.bg-secondary{
+  background: var(--color-secondary);
+  color: white;
+}
+
+.ho:hover{
+  background: var(--color-secondary);
+  color: white;
+}
+
+/* Line height */
+.text-line-height {
+  line-height: 185%;
+}
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.border{
+  border: 1px solid gray;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Custom Utilities */
+.service-name {
+  text-transform: uppercase;
+  display: block;
+  font-weight: 600;
+  font-size: 0.875rem;
+  letter-spacing: 0.1em;
+  color: var(--color-primary);
+}
+
+.title {
+  text-transform: capitalize;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .title {
+    font-size: 1.875rem;
+  }
+}
+
+::selection {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+::-webkit-scrollbar,
+::-webkit-scrollbar-thumb {
+  display: none;
+}
+
+.team-card:hover h2,
+.team-card:hover p {
+  color: #063785;
+}
+
+.team-card:hover .icons {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.rotate {
+  transform: rotateX(180deg);
+}
+
+.rotate30 {
+  transform: rotateX(30deg);
+}
+
+/* Animations */
+.elem-updown {
+  animation: updown 1s ease-in-out infinite;
+}
+
+.elem-move {
+  animation: move 3s ease-in-out infinite;
+}
+
+.elem-rotate-full {
+  animation: rotate-full 1s linear infinite;
+}
+
+.elem-zoom {
+  animation: zoom 2s ease-in-out infinite;
+}
+
+.elem-fade {
+  animation: fade 2s ease-in-out infinite;
+}
+
+.fade-in-image {
+  animation: fadeIn 1s ease-in;
+}
+
+.animate-blink {
+  animation: blink 1s ease-in-out infinite;
+}
+
+/* Keyframes */
+@keyframes updown {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-25%);
+  }
+}
+
+@keyframes move {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(20px);
+  }
+}
+
+@keyframes rotate-full {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes zoom {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes fade {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/* Component styles */
+.section {
+  padding-top: 7rem;
+  padding-bottom: 0;
+}
+
+@media (min-width: 1024px) {
+  .section {
+    padding-top: 8rem;
+    padding-bottom: 4rem;
+  }
+}
+
+.section-title {
+  padding-bottom: 1rem;
+  font-size: 28px;
+}
+
+.hero__title{
+  color: rgb(17, 24, 39);
+}
+
+@media (min-width: 768px) {
+  .section-title {
+    font-size: 35px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-title {
+    font-size: 38px;
+  }
+}
+
+.section-text {
+  padding-bottom: 2rem;
+  font-size: 15px;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.container {
+  margin-left: auto;
+  margin-right: auto;
+  width: calc(100% - 3rem);
+  max-width: 72rem;
+}

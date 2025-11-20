@@ -1,0 +1,1 @@
+// export { default as nocontact} from './nocontact.svg';
