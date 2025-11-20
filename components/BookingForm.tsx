@@ -10,7 +10,8 @@ import {
   Calendar, 
   CheckCircle, 
   Loader,
-  ArrowLeft 
+  ArrowLeft,
+  Globe // Added Globe icon for country code
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { API_BASE_URL } from '@/utils/API';
@@ -31,7 +32,8 @@ interface Plan {
 interface FormData {
   fullname: string;
   email: string;
-  phone: string;
+  phone: string; // This will now store the local part of the number
+  countryCode: string; // NEW: Stores the country code, e.g., '+234'
   seats: number;
   date: string;
   planId: string | null;
@@ -47,6 +49,21 @@ interface ValidationErrors {
 }
 
 // ──────────────────────────────────────────────────────────────
+// Country Code Data
+// ──────────────────────────────────────────────────────────────
+
+// Simplified list for demonstration. You can expand this.
+const countryCodes = [
+  { name: 'Nigeria', code: '+234', flag: '🇳🇬' },
+  { name: 'United States', code: '+1', flag: '🇺🇸' },
+  { name: 'United Kingdom', code: '+44', flag: '🇬🇧' },
+  { name: 'Canada', code: '+1', flag: '🇨🇦' },
+  { name: 'Ghana', code: '+233', flag: '🇬🇭' },
+  { name: 'South Africa', code: '+27', flag: '🇿🇦' },
+  // Add more countries here
+];
+
+// ──────────────────────────────────────────────────────────────
 // Component
 // ──────────────────────────────────────────────────────────────
 
@@ -59,10 +76,14 @@ const BookingForm: React.FC = () => {
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
 
+  // Set default country code to Nigeria (+234)
+  const defaultCountryCode = countryCodes.find(c => c.code === '+234')?.code || countryCodes[0].code;
+
   const [formData, setFormData] = useState<FormData>({
     fullname: '',
     email: '',
     phone: '',
+    countryCode: defaultCountryCode, // Initializing new state
     seats: 1,
     date: '',
     planId: null,
@@ -70,11 +91,12 @@ const BookingForm: React.FC = () => {
 
   const [errors, setErrors] = useState<ValidationErrors>({});
 
-  // Fetch plans
+  // Fetch plans (omitted for brevity, assume it's the same)
   useEffect(() => {
     const fetchPlans = async (): Promise<void> => {
       try {
         setLoading(true);
+        // NOTE: Fix template literal syntax
         const res = await fetch(`${API_BASE_URL}/plans`);
         
         if (!res.ok) throw new Error('Failed to fetch plans');
@@ -115,8 +137,9 @@ const BookingForm: React.FC = () => {
       if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
         newErrors.email = 'Please enter a valid email address';
       }
+      // NEW VALIDATION: Check local number part length (e.g., min 8 digits)
       if (!formData.phone.trim() || formData.phone.replace(/\D/g, '').length < 8) {
-        newErrors.phone = 'Please enter a valid phone number';
+        newErrors.phone = 'Please enter a valid local phone number (min. 8 digits)';
       }
     }
 
@@ -149,18 +172,22 @@ const BookingForm: React.FC = () => {
     if (!validateStep(3)) return;
 
     setSubmitting(true);
+    
+    // COMBINE countryCode and phone for the final payload
+    const fullPhoneNumber = formData.countryCode + formData.phone.trim().replace(/\D/g, ''); 
 
     const payload = {
       fullname: formData.fullname.trim(),
       email: formData.email.trim(),
-      phone: formData.phone.trim(),
+      phone: fullPhoneNumber, // Use the combined number
       seats: formData.seats,
       date: new Date(formData.date).toISOString(),
       plan: formData.planId,
     };
 
     try {
-      const res = await fetch(`${API_BASE_URL}/booking`, {
+      // NOTE: Fix template literal syntax
+      const res = await fetch(`${API_BASE_URL}/booking`, { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -180,6 +207,7 @@ const BookingForm: React.FC = () => {
           fullname: '',
           email: '',
           phone: '',
+          countryCode: defaultCountryCode, // Reset to default
           seats: 1,
           date: '',
           planId: null,
@@ -203,7 +231,7 @@ const BookingForm: React.FC = () => {
   };
 
   // ──────────────────────────────────────────────────────────────
-  // Success Screen with Back Button
+  // Success Screen (omitted for brevity, assume it's the same)
   // ──────────────────────────────────────────────────────────────
   if (success) {
     return (
@@ -233,7 +261,7 @@ const BookingForm: React.FC = () => {
   }
 
   // ──────────────────────────────────────────────────────────────
-  // Main Form
+  // Main Form (Only Step 1 is updated)
   // ──────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 py-12 px-4 relative">
@@ -262,12 +290,10 @@ const BookingForm: React.FC = () => {
               {[1, 2, 3].map((s) => (
                 <React.Fragment key={s}>
                   <div
-                    className={`w-12 h-12 rounded-full flex items-center justify-center font-bold transition-all ${
-                      step >= s
+                    className={`w-12 h-12 rounded-full flex items-center justify-center font-bold transition-all ${                      step >= s
                         ? 'bg-white text-indigo-600'
                         : 'bg-white/30 text-white'
-                    }`}
-                  >
+                    }`}                  >
                     {s}
                   </div>
                   {s < 3 && (
@@ -293,6 +319,7 @@ const BookingForm: React.FC = () => {
                 >
                   <h2 className="text-2xl font-bold text-gray-800 mb-6">Personal Information</h2>
 
+                  {/* Full Name */}
                   <div>
                     <label className="flex items-center gap-2 text-gray-700 font-medium mb-2">
                       <User className="w-5 h-5 text-indigo-600" />
@@ -302,14 +329,12 @@ const BookingForm: React.FC = () => {
                       type="text"
                       value={formData.fullname}
                       onChange={(e) => updateField('fullname', e.target.value)}
-                      className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
-                        errors.fullname ? 'border-red-500' : 'border-gray-200 focus:border-indigo-500'
-                      } outline-none`}
-                      placeholder="John Doe"
+                      className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${errors.fullname ? 'border-red-500' : 'border-gray-200 focus:border-indigo-500'} outline-none`}                      placeholder="John Doe"
                     />
                     {errors.fullname && <p className="text-red-500 text-sm mt-1">{errors.fullname}</p>}
                   </div>
 
+                  {/* Email Address */}
                   <div>
                     <label className="flex items-center gap-2 text-gray-700 font-medium mb-2">
                       <Mail className="w-5 h-5 text-indigo-600" />
@@ -319,28 +344,43 @@ const BookingForm: React.FC = () => {
                       type="email"
                       value={formData.email}
                       onChange={(e) => updateField('email', e.target.value)}
-                      className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
-                        errors.email ? 'border-red-500' : 'border-gray-200 focus:border-indigo-500'
-                      } outline-none`}
-                      placeholder="john@example.com"
+                      className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${errors.email ? 'border-red-500' : 'border-gray-200 focus:border-indigo-500'} outline-none`}                      placeholder="john@example.com"
                     />
                     {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
                   </div>
 
+                  {/* Phone Number (SPLIT INPUT) */}
                   <div>
                     <label className="flex items-center gap-2 text-gray-700 font-medium mb-2">
                       <Phone className="w-5 h-5 text-indigo-600" />
                       Phone Number
                     </label>
-                    <input
-                      type="tel"
-                      value={formData.phone}
-                      onChange={(e) => updateField('phone', e.target.value)}
-                      className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
-                        errors.phone ? 'border-red-500' : 'border-gray-200 focus:border-indigo-500'
-                      } outline-none`}
-                      placeholder="+234 800 000 0000"
-                    />
+                    <div className="flex gap-2">
+                      {/* Country Code Dropdown */}
+                      <div className="relative w-1/3">
+                        <select
+                          value={formData.countryCode}
+                          onChange={(e) => updateField('countryCode', e.target.value)}
+                          className={`appearance-none w-full px-2 sm:px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 outline-none pr-8 text-sm`}
+                        >
+                          {countryCodes.map(c => (
+                            <option key={c.name} value={c.code} title={c.name}>
+                              {c.flag} {c.code}
+                            </option>
+                          ))}
+                        </select>
+                        <Globe className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                      </div>
+
+                      {/* Local Phone Number Input */}
+                      <input
+                        type="tel"
+                        value={formData.phone}
+                        onChange={(e) => updateField('phone', e.target.value)}
+                        className={`w-2/3 px-4 py-3 rounded-xl border-2 transition-all ${errors.phone ? 'border-red-500' : 'border-gray-200 focus:border-indigo-500'} outline-none`}                        
+                        placeholder="800 000 0000"
+                      />
+                    </div>
                     {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
                   </div>
 
@@ -353,7 +393,7 @@ const BookingForm: React.FC = () => {
                 </motion.div>
               )}
 
-              {/* Step 2 */}
+              {/* Step 2 (Rest of the component remains the same) */}
               {step === 2 && (
                 <motion.div
                   key="step2"
@@ -382,12 +422,10 @@ const BookingForm: React.FC = () => {
                             whileHover={{ scale: 1.03 }}
                             whileTap={{ scale: 0.98 }}
                             onClick={() => updateField('planId', planId)}
-                            className={`cursor-pointer rounded-2xl p-6 border-2 transition-all ${
-                              isSelected
+                            className={`cursor-pointer rounded-2xl p-6 border-2 transition-all ${                              isSelected
                                 ? 'border-indigo-600 bg-indigo-50 shadow-lg'
                                 : 'border-gray-200 hover:border-indigo-400'
-                            }`}
-                          >
+                            }`}                          >
                             {plan.tag && (
                               <span className="inline-block bg-indigo-600 text-white text-xs px-3 py-1 rounded-full mb-3">
                                 {plan.tag}
@@ -431,7 +469,7 @@ const BookingForm: React.FC = () => {
                 </motion.div>
               )}
 
-              {/* Step 3 */}
+              {/* Step 3 (omitted for brevity, assume it's the same) */}
               {step === 3 && (
                 <motion.div
                   key="step3"
@@ -453,10 +491,8 @@ const BookingForm: React.FC = () => {
                         min="1"
                         value={formData.seats}
                         onChange={(e) => updateField('seats', parseInt(e.target.value) || 1)}
-                        className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
-                          errors.seats ? 'border-red-500' : 'border-gray-200 focus:border-indigo-500'
-                        } outline-none`}
-                      />
+                        className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${                          errors.seats ? 'border-red-500' : 'border-gray-200 focus:border-indigo-500'
+                        } outline-none`}                      />
                       {errors.seats && <p className="text-red-500 text-sm mt-1">{errors.seats}</p>}
                     </div>
 
@@ -470,10 +506,8 @@ const BookingForm: React.FC = () => {
                         value={formData.date}
                         min={new Date().toISOString().slice(0, 16)}
                         onChange={(e) => updateField('date', e.target.value)}
-                        className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
-                          errors.date ? 'border-red-500' : 'border-gray-200 focus:border-indigo-500'
-                        } outline-none`}
-                      />
+                        className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${                          errors.date ? 'border-red-500' : 'border-gray-200 focus:border-indigo-500'
+                        } outline-none`}                      />
                       {errors.date && <p className="text-red-500 text-sm mt-1">{errors.date}</p>}
                     </div>
                   </div>

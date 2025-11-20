@@ -10,8 +10,6 @@ import WorkSpace7 from "../../assets/images/workspace/site-img (7).jpg";
 import WorkSpace8 from "../../assets/images/workspace/site-img (8).jpg";
 import BookingForm from "../../components/BookingForm";
 import Image from "next/image";
-import { GoogleGenAI } from "@google/genai";
-// import Header from "../components/Header";import { GoogleGenAI } from "@google/genai";
 
 const images = [
   WorkSpace1,
