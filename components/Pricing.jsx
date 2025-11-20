@@ -39,11 +39,11 @@ const PricingCard = ({ plan }) => {
             ₦{plan.price.toLocaleString()}
           </span>
           <span className="text-lg ml-1 font-normal text-neutral-400">
-            /Monthly
+            /Daily
           </span>
         </div>
         
-        <Link href="/book-a-space" className="w-full">
+        <Link href="/book" className="w-full">
           <button className="w-full capitalize md:text-base text-sm hover:bg-primary hover:shadow-md hover:shadow-primary hover:border-2 border-2 border-transparent py-3 px-6 text-white bg-primary hover:border-primary hover:text-white rounded-full">
             Start Now
           </button>
