@@ -36,7 +36,7 @@ export default function AdminLayout({
     { icon: LayoutDashboard, label: "Dashboard", id: "/admin" },
     { icon: FileText, label: "Blogs", id: "/admin/blog" },
     { icon: Calendar, label: "Events", id: "/admin/events" },
-    { icon: Ticket, label: "Bookings", id: "/admin/bookings" },
+    { icon: Ticket, label: "CTF", id: "/admin/bookings/ctf" },
   ];
 
   const handleNav = (link: string) => {

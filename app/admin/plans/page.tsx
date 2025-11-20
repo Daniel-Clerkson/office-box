@@ -31,6 +31,7 @@ export default function ManagePlans() {
     description: "",
     perks: [""],
   });
+  const [pricePeriod, setPricePeriod] = useState<"Monthly" | "Daily" | "Yearly">("Daily");
 
   const API_ENDPOINTS = {
     getPlans: `${API_BASE_URL}/plans`,
@@ -70,9 +71,11 @@ export default function ManagePlans() {
         description: plan.description,
         perks: plan.perks || [""],
       });
+      setPricePeriod("Monthly"); // default frontend period
     } else {
       setCurrentPlan(null);
       setFormData({ name: "", price: "", description: "", perks: [""] });
+      setPricePeriod("Monthly");
     }
     setIsModalOpen(true);
   };
@@ -81,6 +84,7 @@ export default function ManagePlans() {
     setIsModalOpen(false);
     setCurrentPlan(null);
     setFormData({ name: "", price: "", description: "", perks: [""] });
+    setPricePeriod("Monthly");
   };
 
   const validateFormData = (): { isValid: boolean; filteredPerks: string[] } => {
@@ -204,7 +208,9 @@ export default function ManagePlans() {
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <h2 className="text-lg font-bold text-gray-800">{plan.name}</h2>
-                  <p className="text-gray-600 font-medium">₦{Number(plan.price).toLocaleString()}</p>
+                  <p className="text-gray-600 font-medium">
+                    ₦{Number(plan.price).toLocaleString()} / {pricePeriod}
+                  </p>
                 </div>
                 <div className="flex gap-2">
                   <button onClick={() => openModal("edit", plan)} disabled={deleting !== null} className="text-gray-600 hover:bg-gray-100 p-2 rounded-full disabled:opacity-50">
@@ -256,8 +262,28 @@ export default function ManagePlans() {
               </div>
 
               <div>
-                <label className="text-xs sm:text-sm text-gray-700">Price (₦) *</label>
-                <input type="number" step="0.01" min="0.01" value={formData.price} required onChange={(e) => setFormData({ ...formData, price: e.target.value })} className="w-full mt-1 px-3 py-2 rounded-lg bg-gray-50 border text-sm text-gray-800" placeholder="e.g., 1500" />
+                <label className="text-xs sm:text-sm text-gray-700">Price *</label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0.01"
+                    value={formData.price}
+                    required
+                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                    className="flex-1 px-3 py-2 rounded-lg bg-gray-50 border text-sm text-gray-800"
+                    placeholder="e.g., 1500"
+                  />
+                  <select
+                    value={pricePeriod}
+                    onChange={(e) => setPricePeriod(e.target.value as "Monthly" | "Daily" | "Yearly")}
+                    className="px-2 py-2 rounded-lg border bg-gray-50 text-sm"
+                  >
+                    <option value="Daily">Daily</option>
+                    <option value="Monthly">Monthly</option>
+                    <option value="Yearly">Yearly</option>
+                  </select>
+                </div>
               </div>
 
               <div>
