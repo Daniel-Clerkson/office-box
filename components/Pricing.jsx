@@ -8,54 +8,91 @@ import ButtonGroup from "./ButtonGroup";
 import Link from "next/link";
 import { API_BASE_URL } from "@/utils/API";
 
+// ──────────────────────────────────────────────────────────────
+// Sub-Components
+// ──────────────────────────────────────────────────────────────
+
 const Plan = ({ title }) => {
   return (
-    <div className="flex items-center gap-2 text-black">
-      <AiOutlineCheckCircle className="text-primary text-xl" />
-      <span className="text-xs">{title}</span>
+    // Clean text and primary color icon for perks list
+    <div className="flex items-center gap-3 text-gray-700">
+      <AiOutlineCheckCircle className={`text-primary text-xl flex-shrink-0`} />
+      <span className={`text-base font-medium text-gray-700`}>{title}</span>
     </div>
   );
 };
 
-const PricingCard = ({ plan }) => {
+const PricingCard = ({ plan, isSuggested }) => {
+  // Styles for the main container
+  const cardContainerClasses = `
+    mx-2 md:mx-3 cursor-pointer p-0 transition-all duration-300 transform hover:scale-[1.02]
+    rounded-xl overflow-hidden shadow-2xl border-2 border-transparent
+    ${isSuggested ? 'border-primary' : 'hover:border-gray-300'}
+  `;
+
+  // Styles for the Price/Button section (The "split" bottom section)
+  const priceSectionClasses = `
+    p-8 ${isSuggested ? 'bg-primary' : 'bg-gray-100'}
+  `;
+
+  // Styles for the main info section
+  const infoSectionClasses = 'p-8 pt-10 flex flex-col gap-6 bg-white';
+
+  const buttonClasses = `
+    w-full capitalize md:text-lg font-bold cursor-pointer text-sm py-3 px-6 rounded-lg transition-colors
+    ${isSuggested 
+      ? 'bg-white text-primary hover:bg-gray-200' 
+      : 'bg-primary text-white hover:bg-indigo-700'
+    }
+  `;
+
+  const priceTextClasses = isSuggested ? 'text-white' : 'text-gray-900';
+  const unitTextClasses = isSuggested ? 'text-indigo-200' : 'text-neutral-400';
+
   return (
-    <div className="mx-2 md:mx-3 cursor-pointer p-10 transition-all hover:shadow-lg flex flex-col gap-8 rounded-3xl border-neutral-200 border">
-      <div className="flex flex-col gap-3">
-        <h2 className="text-xl font-semibold capitalize text-black">
-          {plan.name}
-        </h2>
-        <span className="text-neutral-400 text-sm">{plan.description}</span>
+    <div className={cardContainerClasses}>
+      {/* 1. TOP SECTION (Info & Perks) */}
+      <div className={infoSectionClasses}>
+        <div className="flex flex-col gap-2">
+          <h2 className="text-3xl font-extrabold capitalize text-gray-800">
+            {plan.name}
+          </h2>
+          <span className="text-base text-gray-500">{plan.description}</span>
+        </div>
+        
+        <div className="flex flex-col gap-4 min-h-[150px]"> 
+          {plan.perks?.map((perk, index) => (
+            <Plan key={index} title={perk} /> 
+          ))}
+        </div>
       </div>
       
-      <div className="flex flex-col gap-5">
-        {plan.perks?.map((perk, index) => (
-          <Plan key={index} title={perk} />
-        ))}
-      </div>
-      
-      <div className="mx-auto">
-        <div className="text-3xl text-center font-dm leading-none flex items-center pb-4 mb-4">
-          <span className="font-medium text-black">
-            ₦{plan.price.toLocaleString()}
-          </span>
-          <span className="text-lg ml-1 font-normal text-neutral-400">
-            /Daily
-          </span>
+      {/* 2. BOTTOM SECTION (Price & Action) - The colored split */}
+      <div className={priceSectionClasses}>
+        <div className="text-center mb-6">
+          <div className="text-5xl font-extrabold leading-none flex items-baseline justify-center">
+            <span className={`font-extrabold ${priceTextClasses}`}>
+              ₦{plan.price.toLocaleString()}
+            </span>
+            <span className={`text-xl ml-2 font-normal ${unitTextClasses}`}>
+              /Daily
+            </span>
+          </div>
         </div>
         
         <Link href="/book" className="w-full">
-          <button className="w-full capitalize md:text-base text-sm hover:bg-primary hover:shadow-md hover:shadow-primary hover:border-2 border-2 border-transparent py-3 px-6 text-white bg-primary hover:border-primary hover:text-white rounded-full">
+          <button className={buttonClasses}>
             Start Now
           </button>
         </Link>
-        
-        <span className="w-full justify-center items-center flex text-primary mt-5 font-semibold animate-bounce cursor-pointer">
-          Try it out
-        </span>
       </div>
     </div>
   );
 };
+
+// ──────────────────────────────────────────────────────────────
+// Main Component
+// ──────────────────────────────────────────────────────────────
 
 const Pricing = () => {
   const [plans, setPlans] = useState([]);
@@ -71,17 +108,27 @@ const Pricing = () => {
       setLoading(true);
       setError(null);
       
-      // Replace API_BASE_URL with your actual base URL
       const response = await fetch(`${API_BASE_URL}/plans`);
       
       if (!response.ok) {
         throw new Error('Failed to fetch plans');
       }
       
-      const data = await response.json();
-      setPlans(data);
+      const rawData = await response.json();
+
+      let plansList = [];
+      if (Array.isArray(rawData)) {
+          plansList = rawData;
+      } else if (rawData?.plans && Array.isArray(rawData.plans)) {
+          plansList = rawData.plans;
+      } else if (rawData?.data && Array.isArray(rawData.data)) {
+          plansList = rawData.data;
+      }
+      
+      setPlans(plansList);
+
     } catch (err) {
-      setError(err.message);
+      setError(err instanceof Error ? err.message : 'An unknown error occurred');
       console.error('Error fetching plans:', err);
     } finally {
       setLoading(false);
@@ -90,41 +137,45 @@ const Pricing = () => {
 
   return (
     <section
-      className="relative section container h-full mx-auto px-0 xl:px-16 flex flex-col gap-5"
+      className="relative section container h-full mx-auto px-4 xl:px-16 flex flex-col gap-12 pt-20 pb-28 bg-white" 
       id="pricing"
     >
-      <div>
-        <span className="service-name text-center">PRICING PLAN</span>
-        <h2 className="section-title text-center text-black">
+      <div className="text-center">
+        <span className="service-name text-center text-primary font-semibold uppercase tracking-widest text-sm">PRICING PLAN</span>
+        <h2 className="section-title text-center text-4xl sm:text-5xl font-extrabold text-gray-900 mt-2">
           Choose your pricing policy
         </h2>
       </div>
 
       {loading ? (
         <div className="flex justify-center items-center py-20">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-primary border-t-4"></div>
         </div>
       ) : error ? (
         <div className="flex justify-center items-center py-20">
-          <p className="text-red-500">Error loading plans: {error}</p>
+          <p className="text-red-500 font-medium text-lg">⚠️ Error loading plans: {error}</p>
         </div>
       ) : plans.length === 0 ? (
         <div className="flex justify-center items-center py-20">
-          <p className="text-neutral-400">No plans available</p>
+          <p className="text-neutral-400 text-lg">😔 No plans available at this time.</p>
         </div>
       ) : (
         <Carousel {...carouselParams}>
-          {plans.map((plan, index) => (
-            <div key={plan._id} className="relative">
-              {/* Show "Suggested" badge on 2nd and 3rd items */}
-              {(index === 1 || index === 2) && (
-                <span className="absolute -top-1 left-10 bg-primary text-white px-2 py-1 rounded-md z-10">
-                  Suggested
-                </span>
-              )}
-              <PricingCard plan={plan} />
-            </div>
-          ))}
+          {plans.map((plan, index) => {
+            // Suggest 2nd card only for a cleaner emphasis
+            const isSuggested = index === 1; 
+
+            return (
+              <div key={plan._id || index} className="relative py-4">
+                {isSuggested && (
+                  <span className="absolute -top-0 left-1/2 transform -translate-x-1/2 bg-yellow-500 text-gray-900 font-bold px-4 py-1 rounded-full shadow-lg z-10 text-xs tracking-wider uppercase">
+                    Most Popular
+                  </span>
+                )}
+                <PricingCard plan={plan} isSuggested={isSuggested} />
+              </div>
+            );
+          })}
         </Carousel>
       )}
     </section>
@@ -132,6 +183,10 @@ const Pricing = () => {
 };
 
 export default Pricing;
+
+// ──────────────────────────────────────────────────────────────
+// Carousel Configuration 
+// ──────────────────────────────────────────────────────────────
 
 const responsive = {
   superLargeDesktop: {

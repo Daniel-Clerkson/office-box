@@ -18,7 +18,7 @@ const EventList = () => {
         if (!res.ok) throw new Error("Failed to load events");
 
         const data = await res.json();
-        console.log(data)
+        console.log(data);
         setEvents(data);
       } catch (err) {
         setError(err.message);
@@ -46,12 +46,12 @@ const EventList = () => {
         <div className="text-red-600 text-lg">Error: {error}</div>
       </div>
     );
-  }else if(events.length === 0){
-    return(
+  } else if (events.length === 0) {
+    return (
       <div className="flex justify-center items-center py-20">
-      <div className="text-gray-700 text-lg">No Events Currently</div>
-    </div>
-    )
+        <div className="text-gray-700 text-lg">No Events Currently</div>
+      </div>
+    );
   }
 
   return (
@@ -70,8 +70,9 @@ const EventList = () => {
                 className="bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer transform hover:scale-105 transition-all duration-300 hover:shadow-2xl"
               >
                 <div className="relative h-64">
+                  {/* UPDATED IMAGE SOURCE */}
                   <Image
-                    src={event.image?.url || "/placeholder-event.jpg"}
+                    src={event.images?.[0]?.url || "/placeholder-event.jpg"}
                     alt={event.title}
                     fill
                     className="object-cover"
@@ -131,8 +132,9 @@ const EventList = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="relative h-96">
+              {/* UPDATED IMAGE SOURCE */}
               <Image
-                src={selectedEvent.image?.url || "/placeholder-event.jpg"}
+                src={selectedEvent.images?.[0]?.url || "/placeholder-event.jpg"}
                 alt={selectedEvent.title}
                 fill
                 className="object-cover rounded-t-2xl"
