@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from "react";
-import WorkSpace5 from "../assets/images/workspace/site-img (5).jpg";
+import WorkSpace5 from "../assets/images/workspace/site-img (6).jpg";
 import WorkSpace6 from "../assets/images/workspace/site-img (6).jpg";
 import WorkSpace7 from "../assets/images/workspace/site-img (7).jpg";
 import WorkSpace8 from "../assets/images/workspace/site-img (8).jpg";

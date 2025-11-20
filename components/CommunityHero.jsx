@@ -1,6 +1,6 @@
 "use client"
 import Image from "next/image";
-import image from "../assets/images/workspace/site-img (4).jpg";
+import image from "../assets/images/workspace/site-img (8).jpg";
 
 const CommunityHero = () => {
   return (

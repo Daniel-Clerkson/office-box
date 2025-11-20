@@ -2,9 +2,9 @@
 import React, { useEffect, useState } from "react";
 import WorkSpace1 from "../../assets/images/workspace/site-img (1).jpg";
 import WorkSpace2 from "../../assets/images/workspace/site-img (2).jpg";
-import WorkSpace3 from "../../assets/images/workspace/site-img (3).jpg";
-import WorkSpace4 from "../../assets/images/workspace/site-img (4).jpg";
-import WorkSpace5 from "../../assets/images/workspace/site-img (5).jpg";
+import WorkSpace3 from "../../assets/images/workspace/site-img (1).jpg";
+import WorkSpace4 from "../../assets/images/workspace/site-img (8).jpg";
+import WorkSpace5 from "../../assets/images/workspace/site-img (2).jpg"
 import WorkSpace6 from "../../assets/images/workspace/site-img (6).jpg";
 import WorkSpace7 from "../../assets/images/workspace/site-img (7).jpg";
 import WorkSpace8 from "../../assets/images/workspace/site-img (8).jpg";
