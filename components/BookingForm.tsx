@@ -240,7 +240,7 @@ const BookingForm: React.FC = () => {
       {/* Main Back Button (Top Left) */}
       <button
         onClick={() => router.back()}
-        className="absolute top-6 left-6 z-20 bg-white/90 backdrop-blur-sm hover:bg-white text-gray-700 hover:text-gray-900 p-4 rounded-2xl shadow-lg transition-all hover:scale-105 flex items-center gap-2 font-medium"
+        className="absolute top-6 right-6 z-20 cursor-pointer bg-white/90 backdrop-blur-sm hover:bg-white text-gray-700 hover:text-gray-900 p-4 rounded-2xl shadow-lg transition-all hover:scale-105 flex items-center gap-2 font-medium"
       >
         <ArrowLeft className="w-5 h-5" />
         Back
@@ -254,15 +254,7 @@ const BookingForm: React.FC = () => {
         >
           {/* Header with Back Button (Top Right) */}
           <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 p-8 relative">
-            {/* Subtle Back Button inside header */}
-            <button
-              onClick={() => router.back()}
-              className="absolute top-6 right-6 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-3 rounded-full transition-all hover:scale-110 z-10"
-              aria-label="Go back"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </button>
-
+          
             <h1 className="text-4xl font-bold text-white text-center mb-2">Reserve Your Space</h1>
             <p className="text-white/90 text-center">Simple. Fast. Efficient.</p>
 
