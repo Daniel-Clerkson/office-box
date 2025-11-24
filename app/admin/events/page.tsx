@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Edit, Trash2, Plus } from "lucide-react";
 import { API_BASE_URL } from "@/utils/API";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 interface Event {
   _id: string;
@@ -12,7 +13,7 @@ interface Event {
   date: string;
   location: string;
   tags: string[];
-  images?: { public_id: string; url: string };
+  images?: { public_id: string; url: string }[];
   isVirtual: boolean;
 }
 
@@ -44,7 +45,9 @@ export default function EventDashboard() {
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this event?")) return;
     try {
-      const res = await fetch(`${API_BASE_URL}/events/${id}`, { method: "DELETE" });
+      const res = await fetch(`${API_BASE_URL}/events/${id}`, {
+        method: "DELETE",
+      });
       if (!res.ok) throw new Error("Failed to delete");
       setEvents(events.filter((e) => e._id !== id));
       alert("Event deleted!");
@@ -59,11 +62,19 @@ export default function EventDashboard() {
   const handleSave = async () => {
     if (!editEvent) return;
     try {
-      const { _id, title, description, location, date, isVirtual, tags } = editEvent;
+      const { _id, title, description, location, date, isVirtual, tags } =
+        editEvent;
       const res = await fetch(`${API_BASE_URL}/events/${_id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, description, location, date, isVirtual, tags }),
+        body: JSON.stringify({
+          title,
+          description,
+          location,
+          date,
+          isVirtual,
+          tags,
+        }),
       });
       if (!res.ok) throw new Error("Failed to update");
       setEvents((prev) => prev.map((e) => (e._id === _id ? editEvent : e)));
@@ -75,7 +86,8 @@ export default function EventDashboard() {
     }
   };
 
-  if (loading) return <div className="text-center py-20">Loading events...</div>;
+  if (loading)
+    return <div className="text-center py-20">Loading events...</div>;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -95,13 +107,17 @@ export default function EventDashboard() {
       <main className="p-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {events.map((event) => (
-            <div key={event._id} className="border rounded-xl overflow-hidden shadow-sm">
+            <div
+              key={event._id}
+              className="border rounded-xl overflow-hidden shadow-sm"
+            >
               <div className="relative h-48">
-                {event.images?.url ? (
-                  <img
-                    src={event.images.url}
+                {event?.images ? (
+                  <Image
+                    src={event.images?.[0]?.url || "/placeholder-event.jpg"}
                     alt={event.title}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover rounded-t-2xl"
                   />
                 ) : (
                   <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400">
@@ -119,9 +135,12 @@ export default function EventDashboard() {
 
               <div className="p-4">
                 <h2 className="text-lg font-bold truncate">{event.title}</h2>
-                <p className="text-sm text-gray-600 line-clamp-2 mt-1">{event.description}</p>
+                <p className="text-sm text-gray-600 line-clamp-2 mt-1">
+                  {event.description}
+                </p>
                 <p className="text-sm mt-2">
-                  <strong>Location:</strong> {event.isVirtual ? "Meeting Link" : event.location}
+                  <strong>Location:</strong>{" "}
+                  {event.isVirtual ? "Meeting Link" : event.location}
                 </p>
                 <p className="text-sm mt-1">
                   <strong>Date:</strong> {new Date(event.date).toLocaleString()}
@@ -130,7 +149,10 @@ export default function EventDashboard() {
                 {event.tags && event.tags.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-3">
                     {event.tags.map((tag) => (
-                      <span key={tag} className="px-2 py-1 bg-gray-100 rounded-full text-xs">
+                      <span
+                        key={tag}
+                        className="px-2 py-1 bg-gray-100 rounded-full text-xs"
+                      >
                         {tag}
                       </span>
                     ))}
@@ -165,13 +187,17 @@ export default function EventDashboard() {
             <input
               type="text"
               value={editEvent.title}
-              onChange={(e) => setEditEvent({ ...editEvent, title: e.target.value })}
+              onChange={(e) =>
+                setEditEvent({ ...editEvent, title: e.target.value })
+              }
               className="w-full border rounded-lg px-4 py-2"
               placeholder="Title"
             />
             <textarea
               value={editEvent.description}
-              onChange={(e) => setEditEvent({ ...editEvent, description: e.target.value })}
+              onChange={(e) =>
+                setEditEvent({ ...editEvent, description: e.target.value })
+              }
               className="w-full border rounded-lg px-4 py-2"
               placeholder="Description"
               rows={3}
@@ -179,7 +205,9 @@ export default function EventDashboard() {
             <input
               type="text"
               value={editEvent.location}
-              onChange={(e) => setEditEvent({ ...editEvent, location: e.target.value })}
+              onChange={(e) =>
+                setEditEvent({ ...editEvent, location: e.target.value })
+              }
               className="w-full border rounded-lg px-4 py-2"
               placeholder={editEvent.isVirtual ? "Meeting Link" : "Location"}
             />
@@ -187,15 +215,24 @@ export default function EventDashboard() {
               type="datetime-local"
               value={new Date(editEvent.date).toISOString().slice(0, 16)}
               onChange={(e) =>
-                setEditEvent({ ...editEvent, date: new Date(e.target.value).toISOString() })
+                setEditEvent({
+                  ...editEvent,
+                  date: new Date(e.target.value).toISOString(),
+                })
               }
               className="w-full border rounded-lg px-4 py-2"
             />
             <div className="flex gap-4 mt-4">
-              <button onClick={() => setEditEvent(null)} className="flex-1 py-2 border rounded-lg">
+              <button
+                onClick={() => setEditEvent(null)}
+                className="flex-1 py-2 border rounded-lg"
+              >
                 Cancel
               </button>
-              <button onClick={handleSave} className="flex-1 py-2 bg-blue-600 text-white rounded-lg">
+              <button
+                onClick={handleSave}
+                className="flex-1 py-2 bg-blue-600 text-white rounded-lg"
+              >
                 Save
               </button>
             </div>

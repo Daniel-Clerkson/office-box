@@ -99,14 +99,23 @@ export default function BookingsPage() {
     const date = new Date(iso);
     const now = new Date();
     const isToday = date.toDateString() === now.toDateString();
-    const isTomorrow = new Date(now.setDate(now.getDate() + 1)).toDateString() === date.toDateString();
+    const isTomorrow =
+      new Date(now.setDate(now.getDate() + 1)).toDateString() ===
+      date.toDateString();
 
-    const time = date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    const time = date.toLocaleTimeString([], {
+      hour: "numeric",
+      minute: "2-digit",
+    });
     const day = isToday
       ? "Today"
       : isTomorrow
       ? "Tomorrow"
-      : date.toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" });
+      : date.toLocaleDateString([], {
+          weekday: "short",
+          month: "short",
+          day: "numeric",
+        });
 
     return `${day} at ${time}`;
   };
@@ -151,30 +160,27 @@ export default function BookingsPage() {
         return <CalendarCheck className="w-5 h-5 text-indigo-600" />;
     }
   };
+  const counts = {
+    Current: bookings.filter((b) => new Date(b.date) >= new Date()).length,
+    Past: bookings.filter((b) => new Date(b.date) < new Date()).length,
+  };
 
   return (
     <>
       <div className="min-h-screen bg-gray-50 flex flex-col">
-        {/* Header */}
-        <header className="sticky top-0 z-40 bg-white border-b border-gray-200 shadow-sm">
-          <div className="flex items-center justify-between px-4 py-5">
-            <h1 className="text-2xl font-bold text-gray-900">My Bookings</h1>
+          {/* Search */}
+          <div className="px-4 py-3 bg-white">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search by name, plan, email or phone..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-12 pr-4 py-3 bg-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-gray-900 placeholder:text-gray-500"
+              />
+            </div>
           </div>
-        </header>
-
-        {/* Search */}
-        <div className="px-4 py-3 bg-white">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search by name, plan, email or phone..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-gray-900 placeholder:text-gray-500"
-            />
-          </div>
-        </div>
 
         {/* Tabs */}
         <div className="flex bg-white border-b border-gray-200">
@@ -187,9 +193,9 @@ export default function BookingsPage() {
               }`}
             >
               {tab}
-              <span className="ml-2 text-xs opacity-70">
-                ({filteredBookings.filter((b) => activeTab === tab ? true : false).length})
-              </span>
+              {/* 2. Use the pre-calculated object to show the count for THIS tab */}
+              <span className="ml-2 text-xs opacity-70">({counts[tab]})</span>
+
               {activeTab === tab && (
                 <div className="absolute bottom-0 left-0 right-0 h-1 bg-indigo-600 rounded-t-md" />
               )}
@@ -210,10 +216,14 @@ export default function BookingsPage() {
                 <CalendarX2 className="w-12 h-12 text-gray-400" />
               </div>
               <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                {search ? "No bookings found" : `No ${activeTab.toLowerCase()} bookings`}
+                {search
+                  ? "No bookings found"
+                  : `No ${activeTab.toLowerCase()} bookings`}
               </h3>
               <p className="text-sm text-gray-500">
-                {search ? "Try different search terms" : "You have no bookings yet"}
+                {search
+                  ? "Try different search terms"
+                  : "You have no bookings yet"}
               </p>
             </div>
           ) : (
@@ -232,13 +242,16 @@ export default function BookingsPage() {
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-gray-900 truncate">{booking.fullname}</h3>
+                  <h3 className="font-semibold text-gray-900 truncate">
+                    {booking.fullname}
+                  </h3>
                   <div className="flex items-center gap-2 text-sm text-gray-500 mt-1">
                     <Clock className="w-4 h-4" />
                     <span>{formatDate(booking.date)}</span>
                   </div>
                   <p className="text-sm text-gray-600 truncate mt-1">
-                    {booking.plan.name} {booking.seats > 1 && `· ${booking.seats} seats`}
+                    {booking.plan.name}{" "}
+                    {booking.seats > 1 && `· ${booking.seats} seats`}
                   </p>
                 </div>
 
@@ -247,7 +260,10 @@ export default function BookingsPage() {
                     ₦{booking.plan.price.toLocaleString()}
                   </p>
                   {booking.seats > 1 && (
-                    <p className="text-xs text-gray-500">Total: ₦{(booking.plan.price * booking.seats).toLocaleString()}</p>
+                    <p className="text-xs text-gray-500">
+                      Total: ₦
+                      {(booking.plan.price * booking.seats).toLocaleString()}
+                    </p>
                   )}
                 </div>
               </button>
@@ -261,7 +277,9 @@ export default function BookingsPage() {
         <div className="fixed inset-0 bg-black/60 z-50 flex items-end sm:items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
             <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between">
-              <h2 className="text-xl font-bold text-gray-900">Booking Details</h2>
+              <h2 className="text-xl font-bold text-gray-900">
+                Booking Details
+              </h2>
               <button
                 onClick={() => setSelectedBooking(null)}
                 className="p-2 rounded-full hover:bg-gray-100 transition-colors"
@@ -280,9 +298,12 @@ export default function BookingsPage() {
                   {getInitials(selectedBooking.fullname)}
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold text-gray-900">{selectedBooking.fullname}</h3>
+                  <h3 className="text-2xl font-bold text-gray-900">
+                    {selectedBooking.fullname}
+                  </h3>
                   <p className="text-sm text-gray-500">
-                    Booked on {new Date(selectedBooking.createdAt).toLocaleDateString()}
+                    Booked on{" "}
+                    {new Date(selectedBooking.createdAt).toLocaleDateString()}
                   </p>
                 </div>
               </div>
@@ -317,7 +338,10 @@ export default function BookingsPage() {
                   <Users className="w-6 h-6 text-indigo-600" />
                   <div>
                     <p className="text-sm text-gray-500">Seats</p>
-                    <p className="font-semibold">{selectedBooking.seats} seat{selectedBooking.seats > 1 ? "s" : ""}</p>
+                    <p className="font-semibold">
+                      {selectedBooking.seats} seat
+                      {selectedBooking.seats > 1 ? "s" : ""}
+                    </p>
                   </div>
                 </div>
 
@@ -341,12 +365,17 @@ export default function BookingsPage() {
                   <div className="flex justify-between items-center">
                     <div>
                       <p className="text-sm text-gray-500">Price per seat</p>
-                      <p className="font-semibold">₦{selectedBooking.plan.price.toLocaleString()}</p>
+                      <p className="font-semibold">
+                        ₦{selectedBooking.plan.price.toLocaleString()}
+                      </p>
                     </div>
                     <div className="text-right">
                       <p className="text-sm text-gray-500">Total Amount</p>
                       <p className="text-2xl font-bold text-indigo-600">
-                        ₦{(selectedBooking.plan.price * selectedBooking.seats).toLocaleString()}
+                        ₦
+                        {(
+                          selectedBooking.plan.price * selectedBooking.seats
+                        ).toLocaleString()}
                       </p>
                     </div>
                   </div>
