@@ -235,7 +235,7 @@ const BookingForm: React.FC = () => {
   // ──────────────────────────────────────────────────────────────
   if (success) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-blue-50 to-purple-50 flex items-center justify-center p-4 relative">
+      <div className="min-h-screen flex items-center justify-center p-4 relative">
         {/* Floating Back Button */}
         <button
           onClick={() => router.back()}
@@ -281,7 +281,7 @@ const BookingForm: React.FC = () => {
           className="bg-white rounded-3xl shadow-2xl overflow-hidden relative"
         >
           {/* Header with Back Button (Top Right) */}
-          <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 p-8 relative">
+          <div className="bg-primary p-8 relative">
           
             <h1 className="text-4xl font-bold text-white text-center mb-2">Reserve Your Space</h1>
             <p className="text-white/90 text-center">Simple. Fast. Efficient.</p>
@@ -386,7 +386,7 @@ const BookingForm: React.FC = () => {
 
                   <button
                     onClick={nextStep}
-                    className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-4 rounded-xl font-bold text-lg hover:shadow-lg transition-all"
+                    className="w-full bg-primary text-white py-4 rounded-xl font-bold text-lg hover:shadow-lg transition-all"
                   >
                     Continue to Plans
                   </button>
@@ -461,7 +461,7 @@ const BookingForm: React.FC = () => {
                     </button>
                     <button
                       onClick={nextStep}
-                      className="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-4 rounded-xl font-bold hover:shadow-lg transition-all"
+                      className="flex-1 bg-primary text-white py-4 rounded-xl font-bold hover:shadow-lg transition-all"
                     >
                       Continue
                     </button>
