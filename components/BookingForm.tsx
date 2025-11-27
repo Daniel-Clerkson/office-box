@@ -258,7 +258,7 @@ const BookingForm: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 py-12 px-4 relative">
+    <div className="min-h-screen bg-transparent py-12 px-4 relative">
       {/* Main Back Button (Top Left) */}
       <button
         onClick={() => router.back()}
