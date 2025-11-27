@@ -10,10 +10,10 @@ const usefulLinks = [
   { title: "Communities", url: "/communities" },
 ];
 const suggestedPlans = [
-  { title: "Meeting Room", url: "/book-a-space" },
-  { title: "Dedicated Desk", url: "/book-a-space" },
-  { title: "Standard Office", url: "/book-a-space" },
-  { title: "Premium Office", url: "/book-a-space" },
+  { title: "Meeting Room", url: "/book" },
+  { title: "Dedicated Desk", url: "/book" },
+  { title: "Standard Office", url: "/book" },
+  { title: "Premium Office", url: "/book" },
 ];
 const socials = [
   { title: "Instagram", url: "https://www.instagram.com/officebox_ng" },

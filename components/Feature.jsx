@@ -28,7 +28,7 @@ const Feature = () => {
               Plenty of workspace.
             </li>
           </ul>
-          <Link href="/book-a-space">
+          <Link href="/book">
             <button className="lg:inline-flex flex h-[52px] items-center justify-center rounded-xl w-full md:w-fit  bg-primary hover:bg-secondary  py-4 px-8 font-sans text-[15px] font-semibold capitalize text-white">
               Book a Space
             </button>
