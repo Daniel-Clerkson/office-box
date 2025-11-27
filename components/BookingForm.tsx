@@ -230,9 +230,6 @@ const BookingForm: React.FC = () => {
     setErrors(prev => ({ ...prev, [field]: undefined }));
   };
 
-  // ──────────────────────────────────────────────────────────────
-  // Success Screen (omitted for brevity, assume it's the same)
-  // ──────────────────────────────────────────────────────────────
   if (success) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4 relative">
@@ -260,9 +257,6 @@ const BookingForm: React.FC = () => {
     );
   }
 
-  // ──────────────────────────────────────────────────────────────
-  // Main Form (Only Step 1 is updated)
-  // ──────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 py-12 px-4 relative">
       {/* Main Back Button (Top Left) */}
@@ -386,7 +380,7 @@ const BookingForm: React.FC = () => {
 
                   <button
                     onClick={nextStep}
-                    className="w-full bg-primary text-white py-4 rounded-xl font-bold text-lg hover:shadow-lg transition-all"
+                    className="w-full bg-primary cursor-pointer text-white py-4 rounded-xl font-bold text-lg hover:shadow-lg transition-all"
                   >
                     Continue to Plans
                   </button>
@@ -461,7 +455,7 @@ const BookingForm: React.FC = () => {
                     </button>
                     <button
                       onClick={nextStep}
-                      className="flex-1 bg-primary text-white py-4 rounded-xl font-bold hover:shadow-lg transition-all"
+                      className="flex-1 bg-primary cursor-pointer text-white py-4 rounded-xl font-bold hover:shadow-lg transition-all"
                     >
                       Continue
                     </button>
@@ -550,7 +544,7 @@ const BookingForm: React.FC = () => {
                     <button
                       onClick={handleSubmit}
                       disabled={submitting}
-                      className="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-4 rounded-xl font-bold hover:shadow-lg transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                      className="flex-1 cursor-pointer bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-4 rounded-xl font-bold hover:shadow-lg transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                     >
                       {submitting ? (
                         <>
