@@ -17,14 +17,16 @@ const Header = () => {
   const [headerShadow, setHeaderShadow] = useState(false);
 
   useEffect(() => {
-    const addHeaderShadow = () => {
-      window.scrollY >= 100 ? setHeaderShadow(true) : setHeaderShadow(false);
-    };
-    window.addEventListener("scroll", addHeaderShadow);
+    if (typeof window !== "undefined") {
+      const addHeaderShadow = () => {
+        window.scrollY >= 100 ? setHeaderShadow(true) : setHeaderShadow(false);
+      };
+      window.addEventListener("scroll", addHeaderShadow);
 
-    return () => {
-      window.removeEventListener("scroll", addHeaderShadow);
-    };
+      return () => {
+        window.removeEventListener("scroll", addHeaderShadow);
+      };
+    }
   }, []);
 
   return (
