@@ -26,7 +26,7 @@ const socials = [
     url: "https://www.tiktok.com/@officebox_ng?_t=zs-8yskbsjtfxu&_r=1",
   },
   {
-    title: "Instagram",
+    title: "WhatsApp",
     url: "https://chat.whatsapp.com/FeV3iH8ZbOfIAJzOMOJUOp?mode=ac_t",
   },
 ];
